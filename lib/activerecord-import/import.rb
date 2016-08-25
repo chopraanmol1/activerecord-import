@@ -397,7 +397,7 @@ class ActiveRecord::Base
               next if model.valid?(options[:validate_with_context])
               raise(ActiveRecord::RecordInvalid, model) if options[:raise_error]
               array_of_attributes[i] = nil
-              failed << model
+              failed << ((model.respond_to?(:failed_instance) && model.failed_instance.present?) ? {failed_instance:model.failed_instance,errors:model.errors} : model)
             end
           end
         else
@@ -453,7 +453,7 @@ class ActiveRecord::Base
           next if model.valid?(options[:validate_with_context])
           raise(ActiveRecord::RecordInvalid, model) if options[:raise_error]
           array_of_attributes[i] = nil
-          failed_instances << model.dup
+          failed_instances << ((model.respond_to?(:failed_instance) && model.failed_instance.present?) ? {failed_instance:model.failed_instance,errors:model.errors} : model.dup)
         end
       end
 
